@@ -1,37 +1,28 @@
 from random import randint  #On utiliseras seulement la fonction randint de random
-
+from tools import askInt , askN_Y 
 init : bool = True
 
 
-def askInt(prompt) -> int:  #Fonction pour forcer la saisie d'un nombre (entier)
-    while True:
-        try:
-            value: int = int(input(prompt))
-            return value
-        
-        except ValueError:
-            print("/!\\ Try again with a number /!\\")
-
 def Config_tries():  #Configuration du nombre d'essais
     global itrytot
-    srepConfigtry : str = input("\nDo you want to configure your tries ? Y/N\n")    
-    if srepConfigtry == "Y" or srepConfigtry == "y":
+    srepConfigtry : str = askN_Y("\nDo you want to configure your tries ? Y/N\n")    
+    if srepConfigtry == True:
         itrytot = askInt("New tries: ")
 
 def Config_lim():   #Configurations des limites
     global imin
     global imax
-    srepConfiglim : str = input("\nDo you want to configure your limits ? Y/N\n")    
-    if srepConfiglim == "Y" or srepConfiglim == "y":
+    srepConfiglim : str = askN_Y("\nDo you want to configure your limits ? Y/N\n")    
+    if srepConfiglim == True:
         imin = askInt("New minimum: ")
         imax = askInt("New maximum: ")
-        if imin > imax:
+        if imin > imax:                 #si le minimum est plus élevé que le maximum on les intervertis
             iplaceholder : int = imin 
             imin = imax 
             imax = iplaceholder
             print("the minimum and maximum didn't match they were swapped.")
 
-def game(itrytot,imin,imax):    #Fonction principale du jeu
+def game(itrytot : int, imin : int, imax : int):    #Fonction principale du jeu
 
     itry : int = itrytot
     ix : int = randint(imin,imax)
@@ -51,20 +42,22 @@ def game(itrytot,imin,imax):    #Fonction principale du jeu
             itry = -1
 
     if itry == 0:
-        srepRestart = input("\nYou exceed " + str(itrytot) + " tries ! :,(\nthe number was: " + str(ix) + "\n  restart ? Y/N \n")
+        srepRestart : bool= askN_Y("\nYou exceed " + str(itrytot) + " tries ! :,(\nthe number was: " + str(ix) + "\n  restart ? Y/N \n")
     else:
-        srepRestart = input("restart ? Y/N \n")
+        srepRestart : bool = askN_Y("restart ? Y/N \n")
 
-    if srepRestart == "y" or srepRestart == "Y":    #Si le joueur veut rejouer la fonction se rapelle
+    if srepRestart == True:    #Si le joueur veut rejouer la fonction se rapelle
         game(itrytot,imin,imax)
 
 
 
 while init == True:    #Boucle pour initialiser et reconfigurer le jeu
+    
     #Init
     imin : int = 0
     imax : int = 100
     itrytot : int = 10 
+    
     Config_tries()
     Config_lim()
 
@@ -72,6 +65,4 @@ while init == True:    #Boucle pour initialiser et reconfigurer le jeu
     game(itrytot,imin,imax)
 
     #Reconfigurer le jeu ou fermer
-    srepReConfig : str = input("Do you want to re-configure the game ? Y/N\n")
-    if not(srepReConfig == "Y" or srepReConfig == "y"):
-        init = False
+    init = askN_Y("Do you want to re-configure the game ? Y/N\n")
